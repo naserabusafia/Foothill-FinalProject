@@ -1,14 +1,19 @@
 import express from "express";
+import { errorHandler, notFoundHandler } from "./middleware/errorHandler";
 
 export function createApp() {
   const app = express();
-  app.use(express.json());
+  app.disable("x-powered-by");
+  app.use(express.json({ limit: "100kb" }));
 
   app.get("/health", (_req, res) => {
     res.json({ status: "ok" });
   });
 
-  // Module routers and the error handler are mounted here from day 1 on.
+  // Module routers are mounted here.
+
+  app.use(notFoundHandler);
+  app.use(errorHandler);
 
   return app;
 }

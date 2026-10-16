@@ -17,15 +17,21 @@
 - [x] `migrate.ts` + `seed.ts`، والـ seed آمن للتكرار
 - [x] تحقق يدوي: القيود العشرة الأساسية ترفض البيانات الخاطئة
 - [x] `app.ts` / `server.ts` مع `GET /health`
-- [ ] commit
+- [x] commit (PR #1)
 
 ---
 
 ## اليوم 1 (15/10): البنية التحتية والحسابات
 
-- [ ] `shared/errors.ts`: `AppError(status, code, message)` + `NotFoundError`، `ConflictError`...
-- [ ] `middleware/errorHandler.ts`: شكل موحّد + ترجمة أخطاء zod
-- [ ] `middleware/validate.ts`
+**`feat/error-handling`**
+- [x] `shared/errors.ts`: `AppError(status, code, message, details?)` + 7 أنواع
+- [x] `shared/validation.ts`: `validate(schema, data)`، helper وليس middleware (القيمة تضل typed، و `req.query` بـ Express 5 للقراءة فقط)
+- [x] `middleware/errorHandler.ts`: شكل موحّد، zod ← 400، JSON خاطئ ← 400، body كبير ← 413، lock timeout / pool ← 503 + `Retry-After`، غير متوقع ← 500 بدون تفاصيل
+- [x] `db/errors.ts`: `getPgError()` يقرأ الخطأ الأصلي من `DrizzleQueryError.cause`
+- [x] `DB_POOL_MAX` و `DB_CONNECTION_TIMEOUT_MS` بالـ config
+- [x] vitest + 16 اختبار للأخطاء
+
+**`feat/api-key-auth` و `feat/accounts`**
 - [ ] `shared/apiKey.ts`: توليد مفتاح عشوائي + `sha256` + prefix
 - [ ] `middleware/apiKeyAuth.ts` (401) و `middleware/adminAuth.ts`
 - [ ] `POST /accounts` (admin، يرجّع المفتاح مرة واحدة) و `GET /account`
