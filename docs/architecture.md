@@ -40,17 +40,20 @@
 │  │  ├─ schema.ts           ← كل الجداول والقيود (ملف واحد)
 │  │  ├─ client.ts           ← Pool + drizzle + أنواع Db / Tx / DbOrTx
 │  │  ├─ errors.ts           ← getPgError() + أكواد Postgres (SQLSTATE)
-│  │  ├─ migrate.ts
-│  │  └─ seed.ts             ← الخطط الجاهزة بمعرّفات ثابتة
+│  │  ├─ utils.ts            ← firstRow() لنتائج RETURNING
+│  │  ├─ migrate.ts          ← runMigrations() (دالة فقط)
+│  │  └─ seed.ts             ← PREDEFINED_PLAN_IDS + seedPredefinedPlans() (دالة فقط)
+│  ├─ scripts/               ← نقاط تشغيل CLI: db-migrate.ts، db-seed.ts
+│  ├─ types/express.d.ts     ← يضيف req.accountId لنوع Request
 │  ├─ shared/                ← أدوات مشتركة فعلاً بين modules
 │  │  ├─ errors.ts           ← AppError وأنواعه
 │  │  ├─ validation.ts       ← validate(schema, data): يرجّع قيمة typed أو يرمي 400
-│  │  ├─ apiKey.ts           ← توليد + sha256
+│  │  ├─ apiKey.ts           ← generateApiKey، hashApiKey (sha256)، secretsEqual
 │  │  ├─ month.ts            ← currentMonthUtc(), parseMonth()
 │  │  └─ pagination.ts       ← cursor encode/decode
 │  ├─ middleware/
-│  │  ├─ apiKeyAuth.ts       ← يضع req.accountId
-│  │  ├─ adminAuth.ts
+│  │  ├─ apiKeyAuth.ts       ← x-api-key ← req.accountId، و getAccountId(req)
+│  │  ├─ adminAuth.ts        ← x-admin-key (مقارنة constant-time)
 │  │  └─ errorHandler.ts     ← notFoundHandler + errorHandler (آخر middleware)
 │  └─ modules/
 │     ├─ accounts/   accounts.routes.ts · accounts.service.ts · accounts.schemas.ts
@@ -64,7 +67,8 @@
 │        ├─ consume.repository.ts    ← queries الأقفال (تأخذ tx إجبارياً)
 │        └─ decide.ts                ← منطق القرار، pure function بدون DB
 ├─ tests/
-│  ├─ helpers/               ← resetDb, createAccount, createUser...
+│  ├─ setup/                 ← env.ts (يوجّه لـ quota_test)، global.ts (migrate مرة)، perFile.ts (يسكّر الـ pool)
+│  ├─ helpers/               ← resetDb، createTestAccount، createTestPlan...
 │  ├─ unit/                  ← decide, month...
 │  └─ integration/           ← كل endpoint + التزامن (على Postgres حقيقي)
 ├─ client/                   ← الـ example client (CLI)
@@ -163,7 +167,11 @@ import { getUserOrThrow } from "../users/users.service";
 ## 7. الاختبارات
 
 - **Integration على Postgres حقيقي** (`quota_test`)، بدون mocks للداتابيس، لأن الأقفال والقيود هي اللي بنختبرها.
-- `resetDb()` قبل كل ملف: `TRUNCATE ... CASCADE` ثم seed.
+- `tests/setup/env.ts` يغيّر `DATABASE_URL` لـ `TEST_DATABASE_URL` **قبل** أي import من `src`، فقاعدة التطوير لا تُلمس أبداً.
+- الـ migrations تُطبَّق مرة واحدة قبل كل الاختبارات (`globalSetup`).
+- `resetDb()` في `beforeEach`: `TRUNCATE ... CASCADE` ثم seed، فكل اختبار يبدأ من حالة نظيفة.
+- الملفات تشتغل **واحد ورا الثاني** (`fileParallelism: false`) لأنها تشارك نفس القاعدة.
+- الـ factories (`createTestAccount`...) تستخدم الـ services الحقيقية، مش inserts يدوية، إلا لما الـ API لسه مش موجود.
 - **Unit** للمنطق النقي (`decide`، `month`).
 - بعد اختبارات التزامن: استعلامات الثوابت من `database-design.md` (القسم 7).
 

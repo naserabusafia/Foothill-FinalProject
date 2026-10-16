@@ -31,12 +31,14 @@
 - [x] `DB_POOL_MAX` و `DB_CONNECTION_TIMEOUT_MS` بالـ config
 - [x] vitest + 16 اختبار للأخطاء
 
-**`feat/api-key-auth` و `feat/accounts`**
-- [ ] `shared/apiKey.ts`: توليد مفتاح عشوائي + `sha256` + prefix
-- [ ] `middleware/apiKeyAuth.ts` (401) و `middleware/adminAuth.ts`
-- [ ] `POST /accounts` (admin، يرجّع المفتاح مرة واحدة) و `GET /account`
-- [ ] إعداد vitest: `tests/helpers/resetDb.ts` + factories
-- [ ] **اختبارات:** مفتاح ناقص / خاطئ / ملغي / صحيح، إنشاء حساب بدون admin key
+**`feat/auth-and-accounts`** (دمجنا الـ branchين لتعويض التأخير)
+- [x] `shared/apiKey.ts`: مفتاح `uq_` + 32 بايت عشوائي، `sha256`، prefix، و `secretsEqual` (constant-time)
+- [x] `middleware/apiKeyAuth.ts` (401 `MISSING_API_KEY` / `INVALID_API_KEY`) و `middleware/adminAuth.ts`
+- [x] `POST /accounts` (admin، الافتراضي Starter، خطط جاهزة فقط، المفتاح يظهر مرة واحدة) و `GET /account`
+- [x] `plans.service.ts`: `getAssignablePlanOrThrow()` + `toPlanResponse()` (أول جزء من module الخطط)
+- [x] فصل `migrate` / `seed` عن سكربتات الـ CLI (`src/scripts/`)
+- [x] بنية الاختبارات: `quota_test`، globalSetup، `resetDb`، factories
+- [x] **اختبارات (29 جديدة، 45 المجموع):** مفتاح ناقص / خاطئ / طويل / ملغي / صحيح، hash فقط بالداتابيس، admin key، خطة بنوع خاطئ، خطة شركة أخرى (404)، تحقق المدخلات، عزل الحسابات
 
 ---
 
