@@ -3,9 +3,12 @@ import { Pool } from "pg";
 import { config } from "../config";
 import * as schema from "./schema";
 
+/** The only pool in the process; every module imports `db` from here. */
 export const pool = new Pool({
   connectionString: config.DATABASE_URL,
-  max: 20,
+  max: config.DB_POOL_MAX,
+  connectionTimeoutMillis: config.DB_CONNECTION_TIMEOUT_MS,
+  idleTimeoutMillis: 30_000,
 });
 
 export const db = drizzle({ client: pool, schema, casing: "snake_case" });

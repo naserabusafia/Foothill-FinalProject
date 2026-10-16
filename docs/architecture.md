@@ -39,18 +39,19 @@
 │  ├─ db/
 │  │  ├─ schema.ts           ← كل الجداول والقيود (ملف واحد)
 │  │  ├─ client.ts           ← Pool + drizzle + أنواع Db / Tx / DbOrTx
+│  │  ├─ errors.ts           ← getPgError() + أكواد Postgres (SQLSTATE)
 │  │  ├─ migrate.ts
 │  │  └─ seed.ts             ← الخطط الجاهزة بمعرّفات ثابتة
 │  ├─ shared/                ← أدوات مشتركة فعلاً بين modules
 │  │  ├─ errors.ts           ← AppError وأنواعه
+│  │  ├─ validation.ts       ← validate(schema, data): يرجّع قيمة typed أو يرمي 400
 │  │  ├─ apiKey.ts           ← توليد + sha256
 │  │  ├─ month.ts            ← currentMonthUtc(), parseMonth()
 │  │  └─ pagination.ts       ← cursor encode/decode
 │  ├─ middleware/
 │  │  ├─ apiKeyAuth.ts       ← يضع req.accountId
 │  │  ├─ adminAuth.ts
-│  │  ├─ validate.ts
-│  │  └─ errorHandler.ts
+│  │  └─ errorHandler.ts     ← notFoundHandler + errorHandler (آخر middleware)
 │  └─ modules/
 │     ├─ accounts/   accounts.routes.ts · accounts.service.ts · accounts.schemas.ts
 │     ├─ plans/      plans.routes.ts    · plans.service.ts    · plans.schemas.ts
@@ -148,6 +149,8 @@ import { getUserOrThrow } from "../users/users.service";
 | مفتاح ناقص أو خاطئ | 401 | |
 | تعديل خطة جاهزة | 403 | |
 | غير موجود أو لشركة أخرى | **404** | ما نكشف إنه موجود عند غيرك |
+| JSON خاطئ / body أكبر من 100kb | 400 / 413 | `INVALID_JSON` / `PAYLOAD_TOO_LARGE` |
+| خطأ غير متوقع | 500 | `INTERNAL_ERROR` فقط، والتفاصيل بالـ log |
 | `requestId` مكرر ببيانات مختلفة | 409 | |
 | انتهاء مهلة القفل | 503 + `Retry-After` | خطأ مؤقت، مش قرار |
 
