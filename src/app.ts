@@ -1,5 +1,6 @@
 import express from "express";
 import { errorHandler, notFoundHandler } from "./middleware/errorHandler";
+import { accountsRouter } from "./modules/accounts/accounts.routes";
 
 export function createApp() {
   const app = express();
@@ -10,7 +11,7 @@ export function createApp() {
     res.json({ status: "ok" });
   });
 
-  // Module routers are mounted here.
+  app.use(accountsRouter);
 
   app.use(notFoundHandler);
   app.use(errorHandler);
