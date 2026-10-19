@@ -21,7 +21,8 @@ docker compose up --build
 ```
 
 This starts PostgreSQL and the API, applies migrations and seeds the predefined
-plans. The API listens on http://localhost:3000 (`GET /health`); Postgres is
+plans, then runs the example client once. See its output with
+`docker compose logs client`, and run it again with `docker compose run --rm client`. The API listens on http://localhost:3000 (`GET /health`); Postgres is
 exposed on port 5433. The admin key for `POST /accounts` defaults to
 `dev-admin-key-change-me-0123456789` (override with `ADMIN_API_KEY`).
 

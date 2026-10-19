@@ -34,5 +34,21 @@ services:
         condition: service_healthy
     restart: unless-stopped
 
+  # Example client: runs the demo scenario once against the api, then exits.
+  # Re-run any time with: docker compose run --rm client
+  client:
+    image: node:24-alpine
+    working_dir: /client
+    volumes:
+      - ./client:/client:ro
+    environment:
+      API_URL: http://api:3000
+      ADMIN_API_KEY: ${ADMIN_API_KEY:-dev-admin-key-change-me-0123456789}
+    command: ["node", "--disable-warning=ExperimentalWarning", "demo.ts"]
+    depends_on:
+      api:
+        condition: service_healthy
+    restart: "no"
+
 volumes:
   pgdata:
