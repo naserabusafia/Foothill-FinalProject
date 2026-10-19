@@ -70,9 +70,10 @@
 - [x] **إثبات:** بإزالة `FOR UPDATE` مؤقتاً، اختبار الـ 200 طلب فشل (103 قبول بدل 100)
 - 140 اختبار بالمجموع
 
-**`feat/usage-and-history`** (🟡 إذا ضل وقت)
-- [ ] `GET /account/usage?month=`، `GET /users/:id/usage?month=`
-- [ ] `GET /consumptions` (cursor + فلاتر `userId` و `status`)
+**`feat/usage-and-history`** ✅
+- [x] `GET /account/usage?month=`، `GET /users/:id/usage?month=`: الشهر الحالي فيه الخطة والمتبقي، والشهر القديم `used` فقط، والشهر بالمستقبل 400
+- [x] `GET /consumptions`: cursor + فلاتر `userId` و `status` و `month`، وكل عنصر بنفس شكل رد `POST`
+- [x] 20 اختبار جديد (160 بالمجموع)
 
 ---
 

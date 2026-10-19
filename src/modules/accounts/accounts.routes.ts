@@ -3,6 +3,8 @@ import { adminAuth } from "../../middleware/adminAuth";
 import { apiKeyAuth, getAccountId } from "../../middleware/apiKeyAuth";
 import { validate } from "../../shared/validation";
 import { assignPlanSchema } from "../plans/plans.schemas";
+import { usageQuerySchema } from "../usage/usage.schemas";
+import { getAccountUsage } from "../usage/usage.service";
 import { createAccountSchema } from "./accounts.schemas";
 import { changeAccountPlan, createAccount, getAccountOrThrow } from "./accounts.service";
 
@@ -23,6 +25,12 @@ accountsRouter.post("/accounts", adminAuth, async (req, res) => {
 accountsRouter.get("/account", apiKeyAuth, async (req, res) => {
   const account = await getAccountOrThrow(getAccountId(req));
   res.json(account);
+});
+
+/** The account's shared usage for ?month=YYYY-MM (default: current month). */
+accountsRouter.get("/account/usage", apiKeyAuth, async (req, res) => {
+  const { month } = validate(usageQuerySchema, req.query);
+  res.json(await getAccountUsage(getAccountId(req), month));
 });
 
 /** Switches the calling account to another account plan. Usage is kept. */
