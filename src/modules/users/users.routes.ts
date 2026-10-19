@@ -2,6 +2,8 @@ import { Router } from "express";
 import { apiKeyAuth, getAccountId } from "../../middleware/apiKeyAuth";
 import { validate } from "../../shared/validation";
 import { assignPlanSchema } from "../plans/plans.schemas";
+import { usageQuerySchema } from "../usage/usage.schemas";
+import { getUserUsage } from "../usage/usage.service";
 import { createUserSchema, listUsersQuerySchema, userIdParamsSchema } from "./users.schemas";
 import { changeUserPlan, createUser, getUserDetailsOrThrow, listUsers } from "./users.service";
 
@@ -24,6 +26,13 @@ usersRouter.get("/", async (req, res) => {
 usersRouter.get("/:id", async (req, res) => {
   const { id } = validate(userIdParamsSchema, req.params);
   res.json(await getUserDetailsOrThrow(getAccountId(req), id));
+});
+
+/** The user's individual usage for ?month=YYYY-MM (default: current month). */
+usersRouter.get("/:id/usage", async (req, res) => {
+  const { id } = validate(userIdParamsSchema, req.params);
+  const { month } = validate(usageQuerySchema, req.query);
+  res.json(await getUserUsage(getAccountId(req), id, month));
 });
 
 usersRouter.patch("/:id/plan", async (req, res) => {

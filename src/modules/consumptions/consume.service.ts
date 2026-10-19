@@ -51,7 +51,7 @@ const RULE_MESSAGES: Record<RejectionScope, Record<RejectionRule, string>> = {
  * Built only from the stored row (decision + snapshot), so a replay returns
  * exactly what the original call returned, whatever changed since.
  */
-function toConsumptionResponse(record: ConsumptionRequest): ConsumptionResponse {
+export function toConsumptionResponse(record: ConsumptionRequest): ConsumptionResponse {
   const accepted = record.status === "accepted";
   const added = accepted ? record.units : 0;
 

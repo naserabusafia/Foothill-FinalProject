@@ -59,11 +59,12 @@
 │     ├─ accounts/   accounts.routes.ts · accounts.service.ts · accounts.schemas.ts
 │     ├─ plans/      plans.routes.ts    · plans.service.ts    · plans.schemas.ts
 │     ├─ users/      users.routes.ts    · users.service.ts    · users.schemas.ts
-│     ├─ usage/      usage.routes.ts    · usage.service.ts
+│     ├─ usage/      usage.schemas.ts   · usage.service.ts   (الـ routes بـ accounts و users)
 │     └─ consumptions/
 │        ├─ consumptions.routes.ts
 │        ├─ consumptions.schemas.ts
 │        ├─ consume.service.ts       ← يرتّب خطوات الـ transaction
+│        ├─ consumptions.service.ts  ← سجل القرارات (GET /consumptions)
 │        ├─ consume.repository.ts    ← queries الأقفال (تأخذ tx إجبارياً)
 │        └─ decide.ts                ← منطق القرار، pure function بدون DB
 ├─ tests/
