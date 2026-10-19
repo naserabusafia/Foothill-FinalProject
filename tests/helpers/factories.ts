@@ -1,7 +1,7 @@
 import { db } from "../../src/db/client";
 import { type NewPlan, plans } from "../../src/db/schema";
 import { firstRow } from "../../src/db/utils";
-import { createAccount } from "../../src/modules/accounts/accounts.service";
+import { changeAccountPlan, createAccount } from "../../src/modules/accounts/accounts.service";
 import { createUser } from "../../src/modules/users/users.service";
 
 let counter = 0;
@@ -32,4 +32,26 @@ export async function createTestPlan(values: Partial<NewPlan> & Pick<NewPlan, "s
       .values({ name: unique("Plan"), monthlyLimit: 1_000, maxUnitsPerRequest: 100, ...values })
       .returning(),
   );
+}
+
+interface Limits {
+  monthlyLimit: number;
+  maxUnitsPerRequest: number;
+}
+
+/**
+ * An account on a custom account plan with the given limits, plus one user per
+ * entry in `users`, each on their own custom user plan. Returns ids and the key.
+ */
+export async function createScenario(spec: { account: Limits; users: Limits[] }) {
+  const { account, apiKey } = await createTestAccount();
+  const accountPlan = await createTestPlan({ scope: "account", ownerAccountId: account.id, ...spec.account });
+  await changeAccountPlan(account.id, accountPlan.id);
+
+  const users = [];
+  for (const limits of spec.users) {
+    const plan = await createTestPlan({ scope: "user", ownerAccountId: account.id, ...limits });
+    users.push({ ...(await createTestUser(account.id, { planId: plan.id })), planId: plan.id });
+  }
+  return { accountId: account.id, accountPlanId: accountPlan.id, apiKey, users };
 }
