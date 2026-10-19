@@ -78,8 +78,15 @@
 
 ## اليوم 5 (19/10): Docker والـ Client والقياس
 
-- [ ] `Dockerfile` (multi-stage)
-- [ ] compose كامل: `db` + `api` + `client`، و migrate + seed تلقائي عند البدء
+**`chore/docker-full-stack`** ✅
+- [x] `Dockerfile`: multi-stage (build ← runtime)، مكتبات التشغيل فقط، يوزر `node` مش root، `HEALTHCHECK` على `/health`
+- [x] `.dockerignore`: `.env` و `node_modules` و `.git` ما بيدخلوا الـ image
+- [x] `server.ts`: migrate + seed عند البدء (`RUN_MIGRATIONS_ON_START`)، وإيقاف آمن عند `SIGTERM`
+- [x] compose: `db` + `api` (بيستنى `db` healthy)
+- [x] تحقق: `down -v` ثم `up --build` من الصفر ← healthy، حساب + مستخدم + استهلاك، `restart` والبيانات ضلت، `stop` بيسكّر بأمان
+
+**باقي اليوم 5**
+- [ ] إضافة `client` للـ compose
 - [ ] الـ example client (CLI): قبول، رفض مستخدم، رفض شركة، تعديل خطة، تغيّر النتيجة
 - [ ] Load test: شركة ساخنة، موزّع، مختلط، قرب الحد، وتسجيل النتائج
 
