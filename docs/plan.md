@@ -42,13 +42,16 @@
 
 ---
 
-## اليوم 2 (16/10): الخطط والمستخدمين
+## اليوم 2 (16/10): الخطط والمستخدمين ✅
 
-- [ ] `GET /plans`، `GET /plans/:id`، `POST /plans`، `PATCH /plans/:id`
-- [ ] `POST /users`، `GET /users`، `GET /users/:id`، `PATCH /users/:id/plan`
-- [ ] `PATCH /account/plan`
-- [ ] فحص الملكية: `owner_account_id IS NULL OR = accountId` + الـ scope
-- [ ] **اختبارات:** خطة بنوع خاطئ، خطة أو مستخدم لشركة أخرى (404)، تعديل خطة جاهزة (403)، مستخدمين بنفس الخطة
+**`feat/plans-and-users`**
+- [x] `GET /plans` (جاهزة + خاصة، `?scope=`)، `GET /plans/:id`، `POST /plans`، `PATCH /plans/:id`
+- [x] `POST /users` (Basic افتراضياً)، `GET /users` (cursor + `?externalId=`)، `GET /users/:id`، `PATCH /users/:id/plan`
+- [x] `PATCH /account/plan`
+- [x] فحص الملكية بمكان واحد: `getPlanOrThrow` / `getAssignablePlanOrThrow`
+- [x] `shared/pagination.ts`: cursor بدقة الميكروثانية
+- [x] `maxUnitsPerRequest > monthlyLimit` ← 400، والتعديل الجزئي يُفحص مع القيمة المخزّنة (تحت قفل)
+- [x] **اختبارات (53 جديدة، 98 المجموع):** نوع خطة خاطئ، خطة أو مستخدم لشركة أخرى (404)، تعديل خطة جاهزة (403)، تغيير الـ scope، `externalId` مكرر (409)، pagination كامل بدون تكرار، تعديل خطة مشتركة يظهر عند كل مستخدميها
 
 ---
 

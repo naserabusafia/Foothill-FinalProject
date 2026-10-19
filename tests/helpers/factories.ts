@@ -2,6 +2,7 @@ import { db } from "../../src/db/client";
 import { type NewPlan, plans } from "../../src/db/schema";
 import { firstRow } from "../../src/db/utils";
 import { createAccount } from "../../src/modules/accounts/accounts.service";
+import { createUser } from "../../src/modules/users/users.service";
 
 let counter = 0;
 const unique = (label: string) => `${label} ${++counter}`;
@@ -14,7 +15,16 @@ export async function createTestAccount(overrides: { name?: string; planId?: str
   });
 }
 
-/** Inserts a custom plan directly (the plans API arrives in a later branch). */
+/** Creates a user through the real service (Basic plan unless overridden). */
+export async function createTestUser(accountId: string, overrides: { name?: string; externalId?: string; planId?: string } = {}) {
+  return createUser(accountId, {
+    name: overrides.name ?? unique("User"),
+    externalId: overrides.externalId,
+    planId: overrides.planId ?? "00000000-0000-4000-8000-000000000003",
+  });
+}
+
+/** Inserts a custom plan directly, for tests that need one as a precondition. */
 export async function createTestPlan(values: Partial<NewPlan> & Pick<NewPlan, "scope" | "ownerAccountId">) {
   return firstRow(
     await db

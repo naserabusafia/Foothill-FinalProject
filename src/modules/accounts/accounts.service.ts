@@ -53,6 +53,25 @@ export async function getAccountOrThrow(accountId: string): Promise<AccountRespo
   return toAccountResponse(row.account, row.plan);
 }
 
+/**
+ * Moves the account to another account plan (predefined or its own custom).
+ * Usage is not reset: the new limits apply to what was already consumed this month.
+ */
+export async function changeAccountPlan(accountId: string, planId: string): Promise<AccountResponse> {
+  const plan = await getAssignablePlanOrThrow(accountId, planId, "account");
+
+  const [account] = await db
+    .update(accounts)
+    .set({ planId: plan.id, updatedAt: new Date() })
+    .where(eq(accounts.id, accountId))
+    .returning();
+
+  if (!account) {
+    throw new NotFoundError("ACCOUNT_NOT_FOUND", "Account not found");
+  }
+  return toAccountResponse(account, plan);
+}
+
 /** Resolves an API key to its account, or null if the key is unknown or revoked. */
 export async function findAccountIdByApiKey(key: string): Promise<string | null> {
   const [row] = await db
