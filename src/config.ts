@@ -8,6 +8,8 @@ const envSchema = z.object({
   DB_POOL_MAX: z.coerce.number().int().min(1).max(100).default(20),
   // How long a request may wait for a free pool connection before failing with 503.
   DB_CONNECTION_TIMEOUT_MS: z.coerce.number().int().positive().default(5_000),
+  // How long a consumption waits for a usage-row lock before failing with a retryable 503.
+  CONSUME_LOCK_TIMEOUT_MS: z.coerce.number().int().positive().default(2_000),
   ADMIN_API_KEY: z.string().min(16, "ADMIN_API_KEY must be at least 16 characters"),
 });
 

@@ -55,23 +55,22 @@
 
 ---
 
-## اليوم 3 (17/10): الاستهلاك ⭐
+## اليوم 3 + 4 (19/10): الاستهلاك والتزامن ⭐ ✅
 
-- [ ] `decide.ts` **مع اختباراته أولاً**: كل قاعدة، الحدود بالضبط، ترتيب الأسباب
-- [ ] `consume.repository.ts`: reserve، ensureMonthRows، lock×2، loadPlans، increment، saveDecision
-- [ ] `consume.service.ts`: الفلو الكامل + فرع الإعادة (القرار الأصلي / 409)
-- [ ] `POST /consumptions`
-- [ ] **اختبارات:** قبول وزيادة الطرفين، كل نوع رفض بدون خصم، الإعادة، 409، تغيير الخطة بدون تصفير، حد أقل من المستهلك
+**`feat/consumption`**
+- [x] `shared/month.ts`: الشهر الحالي UTC + صيغة `YYYY-MM`
+- [x] `decide.ts` + `remaining()`: pure، مع اختبارات كل قاعدة والحدود بالضبط وترتيب الأسباب
+- [x] `consume.repository.ts`: setLockTimeout، reserve، findRequest، ensureUsageRows، lock×2، loadCurrentPlans، increment، saveDecision
+- [x] `consume.service.ts`: الفلو الكامل + فرع الإعادة (القرار الأصلي + هيدر `Idempotent-Replayed` / 409)
+- [x] `POST /consumptions` (القبول والرفض الاثنين 200)
+- [x] `SET LOCAL lock_timeout` (`CONSUME_LOCK_TIMEOUT_MS`، افتراضي 2 ثانية) ← 503
+- [x] **اختبارات سلوك:** قبول وزيادة الطرفين، كل نوع رفض بدون خصم، الحد بالضبط، الإعادة حرفياً، إعادة رفض بعد ترقية الخطة، 409، requestId لكل شركة، تغيير الخطة بدون تصفير، حد أقل من المستهلك، شهر جديد
+- [x] **اختبارات تزامن:** حد 100 + 200 طلب = 100 قبول بالضبط؛ حد مستخدم 50 + 100 طلب = 50؛ نفس `requestId` × 20 = خصم واحد؛ تعديل خطة أثناء 100 طلب
+- [x] `tests/helpers/invariants.ts`: الثوابت الخمسة بعد كل اختبار تزامن
+- [x] **إثبات:** بإزالة `FOR UPDATE` مؤقتاً، اختبار الـ 200 طلب فشل (103 قبول بدل 100)
+- 140 اختبار بالمجموع
 
----
-
-## اليوم 4 (18/10): التزامن والقراءات
-
-- [ ] حد 100 + 200 طلب متزامن = 100 قبول بالضبط
-- [ ] نفس `requestId` × 20 بالتزامن = خصم واحد
-- [ ] تعديل خطة أثناء طلبات متزامنة
-- [ ] استعلامات الثوابت بعد كل اختبار تزامن
-- [ ] `SET LOCAL lock_timeout` + 503
+**`feat/usage-and-history`** (🟡 إذا ضل وقت)
 - [ ] `GET /account/usage?month=`، `GET /users/:id/usage?month=`
 - [ ] `GET /consumptions` (cursor + فلاتر `userId` و `status`)
 
