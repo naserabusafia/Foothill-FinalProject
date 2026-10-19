@@ -181,18 +181,27 @@ import { getUserOrThrow } from "../users/users.service";
 
 ## 8. أوامر التطوير
 
+**تشغيل كل شي بـ Docker** (زي المقيّم):
+```bash
+docker compose up --build    # db + api، migrate + seed تلقائي، http://localhost:3000
+docker compose down          # إيقاف (البيانات بتضل)
+docker compose down -v       # إيقاف + مسح الداتابيس
+```
+
+**تطوير محلي** (السيرفر برا Docker، مع إعادة تحميل تلقائية):
 ```bash
 cp .env.example .env
-docker compose up -d --wait db
-npm run db:migrate
-npm run db:seed
-npm run dev            # http://localhost:3000/health
+docker compose up -d --wait db   # الداتابيس بس، لأن api بياخد المنفذ 3000
+npm run dev                      # migrate + seed عند البدء، http://localhost:3000
+npm test
 npm run typecheck
-npm run db:generate    # بعد أي تعديل على schema.ts
-npm run db:studio      # واجهة لتصفح الداتابيس
+npm run db:generate              # بعد أي تعديل على schema.ts
+npm run db:studio                # واجهة لتصفح الداتابيس
 ```
 
 Postgres مكشوف على المنفذ **5433** (وليس 5432) لتجنب التعارض مع أي Postgres محلي.
+
+**ملاحظة:** سكربت إنشاء `quota_test` بيشتغل **مرة وحدة** عند إنشاء الـ volume. إذا الاختبارات اشتكت إن القاعدة مش موجودة: `docker compose down -v` ثم `up` من جديد.
 
 ---
 

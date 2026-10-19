@@ -10,6 +10,8 @@ const envSchema = z.object({
   DB_CONNECTION_TIMEOUT_MS: z.coerce.number().int().positive().default(5_000),
   // How long a consumption waits for a usage-row lock before failing with a retryable 503.
   CONSUME_LOCK_TIMEOUT_MS: z.coerce.number().int().positive().default(2_000),
+  // Apply migrations and seed predefined plans before listening (one service, one database).
+  RUN_MIGRATIONS_ON_START: z.stringbool().default(true),
   ADMIN_API_KEY: z.string().min(16, "ADMIN_API_KEY must be at least 16 characters"),
 });
 

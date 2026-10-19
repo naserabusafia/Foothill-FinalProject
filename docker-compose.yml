@@ -15,8 +15,24 @@ services:
       interval: 2s
       timeout: 3s
       retries: 30
+    restart: unless-stopped
 
-  # api and client services are added on day 5 (see docs/plan.md).
+  api:
+    build: .
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+      # Inside the compose network the database is reached by its service name.
+      DATABASE_URL: postgres://quota:quota@db:5432/quota
+      # Taken from .env or the shell when set; the fallback is for local demos only.
+      ADMIN_API_KEY: ${ADMIN_API_KEY:-dev-admin-key-change-me-0123456789}
+      DB_POOL_MAX: ${DB_POOL_MAX:-20}
+    ports:
+      - "3000:3000"
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
 
 volumes:
   pgdata:
