@@ -145,6 +145,8 @@ import { getUserOrThrow } from "../users/users.service";
 
 ## 6. قواعد الـ API
 
+**تركيب الـ routers:** أي router بيستخدم `router.use(apiKeyAuth)` لازم يتركّب تحت prefix خاص فيه (`app.use("/users", usersRouter)`). لو تركّب على الجذر، الـ auth تبعه بيشتغل على **كل** الطلبات اللي بتمر فيه، حتى `POST /accounts` والمسارات غير الموجودة. `accountsRouter` على الجذر لأنه بيخدم `/accounts` و `/account`، فالـ auth فيه لكل route لحاله.
+
 | الحالة | الكود | الشكل |
 |---|---|---|
 | نجاح | 200 / 201 | الكائن مباشرة |
