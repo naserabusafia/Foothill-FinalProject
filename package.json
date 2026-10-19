@@ -16,7 +16,8 @@
     "db:generate": "drizzle-kit generate",
     "db:migrate": "tsx --env-file-if-exists=.env src/scripts/db-migrate.ts",
     "db:seed": "tsx --env-file-if-exists=.env src/scripts/db-seed.ts",
-    "db:studio": "drizzle-kit studio"
+    "db:studio": "drizzle-kit studio",
+    "demo": "node --disable-warning=ExperimentalWarning --env-file-if-exists=.env client/demo.ts"
   },
   "dependencies": {
     "drizzle-orm": "^0.45.4",

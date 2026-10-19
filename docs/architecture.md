@@ -72,7 +72,7 @@
 │  ├─ helpers/               ← resetDb، createTestAccount، createTestPlan...
 │  ├─ unit/                  ← decide, month...
 │  └─ integration/           ← كل endpoint + التزامن (على Postgres حقيقي)
-├─ client/                   ← الـ example client (CLI)
+├─ client/demo.ts            ← الـ example client (سكربت واحد، بدون مكتبات)
 ├─ loadtest/                 ← سيناريوهات autocannon
 ├─ docker-compose.yml
 ├─ drizzle.config.ts
@@ -184,7 +184,9 @@ import { getUserOrThrow } from "../users/users.service";
 
 **تشغيل كل شي بـ Docker** (زي المقيّم):
 ```bash
-docker compose up --build    # db + api، migrate + seed تلقائي، http://localhost:3000
+docker compose up --build    # db + api + client، migrate + seed تلقائي، http://localhost:3000
+docker compose logs client   # مخرجات سيناريو المثال
+docker compose run --rm client   # إعادة تشغيل السيناريو
 docker compose down          # إيقاف (البيانات بتضل)
 docker compose down -v       # إيقاف + مسح الداتابيس
 ```
